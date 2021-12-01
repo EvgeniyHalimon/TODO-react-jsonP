@@ -1,0 +1,25 @@
+{
+  "posts": [
+    {
+      "post": "oi",
+      "id": 1
+    },
+    {
+      "post": "121212",
+      "id": 2
+    },
+    {
+      "post": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+      "id": 3
+    }
+  ],
+  "users": [
+    {
+      "username": "Dawg",
+      "email": "q@mail.com",
+      "password": "12345678",
+      "userId": "kIWEeDNcc",
+      "id": 1
+    }
+  ]
+}

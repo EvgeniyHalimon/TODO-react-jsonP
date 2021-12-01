@@ -8,7 +8,6 @@ export default function Dashboard(){
         <Container>
             <h1 style={{paddingLeft : '12px'}}>dashboard</h1>
             <PostForm/>
-            <PostList/>
         </Container>
     )
 }

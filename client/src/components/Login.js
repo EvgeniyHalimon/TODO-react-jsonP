@@ -2,6 +2,8 @@ import React from 'react';
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
+import { Fetch } from '../utils/Fetch';
+import { Storage } from '../utils/Storage';
 
 const validationSchema = yup.object({
     email: yup
@@ -22,7 +24,13 @@ export default function Login(){
         },
         validationSchema: validationSchema,
         onSubmit: values => {
-            console.log(values)
+            Fetch.get(`users/?email=${values.email}`).then(res => {
+                if((res.data[0].email === values.email) 
+                    && (res.data[0].password === values.password)){
+                    console.log(1)
+                    Storage.setData('account', res.data[0].userId)
+                } 
+            })
         },
     })
     return(

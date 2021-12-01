@@ -12,3 +12,9 @@
   margin: 10px auto 0 auto;
   text-align: center;
 }
+
+.card-group .list-item{
+  display: flex;
+  justify-content: space-between;
+  word-wrap: break-word;
+}

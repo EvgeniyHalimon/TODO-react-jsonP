@@ -1,7 +1,9 @@
 import React from 'react';
 import {useFormik} from 'formik'
 import * as yup from 'yup'
+import shortid from 'shortid'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
+import { Fetch } from '../utils/Fetch';
 
 const validationSchema = yup.object({
     username: yup
@@ -28,7 +30,16 @@ export default function Register(){
         },
         validationSchema: validationSchema,
         onSubmit: values => {
-            console.log(values)
+            Fetch.get(`users/?email=${values.email}`).then(res => {
+                if(res.data.length === 0){
+                    Fetch.post('users', {
+                        username : values.username,
+                        email : values.email,
+                        password : values.password,
+                        userId : shortid.generate()
+                    })
+                } 
+            })
         },
     })
     return(
