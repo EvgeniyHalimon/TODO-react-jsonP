@@ -1,7 +1,16 @@
 import React from 'react';
+import {Figure} from 'react-bootstrap'
 
 export default function Welcome(){
     return(
-        <h1>Welcome</h1>
+        <Figure
+            style={{display : 'block'}}
+        >
+            <Figure.Image
+                style={{display : 'block', margin: '0 auto'}}
+                alt="picture"
+                src="https://img5.goodfon.ru/wallpaper/nbig/f/2e/neon-neon-welcome.jpg"
+            />
+        </Figure>
     )
 }

@@ -6,3 +6,9 @@
 .navbar-nav a:last-child{
   margin-right: 0px;
 }
+
+.form{
+  width: 500px;
+  margin: 10px auto 0 auto;
+  text-align: center;
+}

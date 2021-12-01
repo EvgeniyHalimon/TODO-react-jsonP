@@ -6,10 +6,9 @@ import PostList from './PostList';
 export default function Dashboard(){
     return(
         <Container>
-            <h1>dashboard</h1>
+            <h1 style={{paddingLeft : '12px'}}>dashboard</h1>
             <PostForm/>
             <PostList/>
         </Container>
-        
     )
 }
