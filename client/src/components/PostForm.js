@@ -15,6 +15,7 @@ const validationSchema = yup.object({
 
 export default function PostForm(){
 
+    const [toggle, setToggle] = useState(false)
     const [posts, setPosts] = useState([])
 
     const formik = useFormik({
@@ -23,22 +24,26 @@ export default function PostForm(){
         },
         validationSchema: validationSchema,
         onSubmit: values => {
+            console.log(values)
             Fetch.post('posts', {
                 post : values.post,
             })
+            /* setPosts([...posts, {post : values.post}]) */
+            setToggle(!false)
         },
     })
 
-    async function getPosts(){
-        const data = await Fetch.get('posts')
-        console.log(data.data)
-        setPosts(data.data)
-    }
-    getPosts()
-
+    
+    
     useEffect(() => {
-        
-    }, [posts]);
+        async function getPosts(){
+            const data = await Fetch.get('posts')
+            console.log(data.data)
+            setPosts(data.data)
+            setToggle(false)
+        }
+        getPosts()
+    }, [toggle]);
     
     return(
         <Box
