@@ -13,7 +13,7 @@
   text-align: center;
 }
 
-.card-group .list-item{
+.cards .card-body{
   display: flex;
   justify-content: space-between;
   word-wrap: break-word;

@@ -34,10 +34,11 @@ export default function PostForm(){
         console.log(data.data)
         setPosts(data.data)
     }
+    getPosts()
 
     useEffect(() => {
-        getPosts()
-    }, []);
+        
+    }, [posts]);
     
     return(
         <Box
@@ -46,7 +47,10 @@ export default function PostForm(){
             component="form"
         >
             <h1>Post form</h1>
-            <FormControl fullWidth>
+            <FormControl 
+            fullWidth
+            className='mb-3'
+            >
                 <TextField
                     id="outlined-multiline-static"
                     label="What's going on?"

@@ -4,17 +4,18 @@ import shortid from 'shortid';
 
 export default function PostList({array}){
     return(
-        <div className='card-group'>
+        <div className='cards'>
             {
                 array.map(item => 
                     <Card 
-                        className='list-item'
+                        body
+                        className='list-item mb-3'
                         key={shortid.generate()} 
                     >
-                        {item.post}
-                        <div>
-                            <CloseButton />
-                        </div>
+                        <p 
+                            style={{wordBreak : 'break-word', marginRight : '5px', textAlign : 'left'}}
+                        >{item.post}</p>
+                        <CloseButton />
                     </Card>
                 )
             }
