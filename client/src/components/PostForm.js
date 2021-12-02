@@ -17,33 +17,42 @@ export default function PostForm(){
 
     const [toggle, setToggle] = useState(false)
     const [posts, setPosts] = useState([])
+    const [deletePost, setDeletePost] = useState(false)
 
     const formik = useFormik({
         initialValues: {
             post: ''
         },
         validationSchema: validationSchema,
-        onSubmit: values => {
-            console.log(values)
+        onSubmit: (values, actions) => {
+            console.log('POST BODY',values)
             Fetch.post('posts', {
                 post : values.post,
+                checked : false
             })
-            /* setPosts([...posts, {post : values.post}]) */
+            setPosts([...posts, {post : values.post}])
             setToggle(!false)
+            actions.resetForm()
         },
     })
 
     
+
+    const handleDelete = (e) => {
+        Fetch.delete(`posts/${e.target.id}`)
+        setDeletePost(true)
+    }
     
     useEffect(() => {
         async function getPosts(){
             const data = await Fetch.get('posts')
             console.log(data.data)
             setPosts(data.data)
-            setToggle(false)
+            setToggle(!true)
+            setDeletePost(false)
         }
         getPosts()
-    }, [toggle]);
+    }, [toggle, deletePost]);
     
     return(
         <Box
@@ -73,7 +82,7 @@ export default function PostForm(){
                     Submit
                 </Button>
             </FormControl>
-            <PostList array={posts}/>
+            <PostList array={posts} onClick={handleDelete}/>
         </Box>
     )
 }

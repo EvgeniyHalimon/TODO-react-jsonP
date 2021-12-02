@@ -1,21 +1,4 @@
 {
-  "posts": [
-    {
-      "post": "rr",
-      "id": 1
-    },
-    {
-      "post": "hello",
-      "id": 2
-    }
-  ],
-  "users": [
-    {
-      "username": "Dawg",
-      "email": "q@mail.com",
-      "password": "12345678",
-      "userId": "kIWEeDNcc",
-      "id": 1
-    }
-  ]
+  "posts": [],
+  "users": []
 }

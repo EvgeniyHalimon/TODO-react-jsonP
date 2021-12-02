@@ -1,8 +1,10 @@
 import React from 'react';
-import { Card, CloseButton, Container } from 'react-bootstrap';
+import { Card, CloseButton,  } from 'react-bootstrap';
 import shortid from 'shortid';
+import {CheckLg} from 'react-bootstrap-icons'
 
-export default function PostList({array}){
+
+export default function PostList({array, onClick}){
     return(
         <div className='cards'>
             {
@@ -15,7 +17,10 @@ export default function PostList({array}){
                         <p 
                             style={{wordBreak : 'break-word', marginRight : '5px', textAlign : 'left'}}
                         >{item.post}</p>
-                        <CloseButton />
+                        <div>
+                            <CheckLg id={item.id} color={'green'} size={30}/>
+                            <CloseButton onClick={onClick} id={item.id}/>
+                        </div>
                     </Card>
                 )
             }
