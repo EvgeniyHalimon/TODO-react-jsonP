@@ -26,7 +26,7 @@ export default function Register(){
         initialValues: {
             username: '',
             email: '',
-            password: '',
+            password: ''
         },
         validationSchema: validationSchema,
         onSubmit: values => {
@@ -36,7 +36,7 @@ export default function Register(){
                         username : values.username,
                         email : values.email,
                         password : values.password,
-                        userId : shortid.generate()
+                        id: shortid.generate()
                     })
                 } 
             })

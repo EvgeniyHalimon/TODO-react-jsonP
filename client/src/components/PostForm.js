@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
 import PostList from './PostList';
+import shortid from 'shortid';
 
 const validationSchema = yup.object({
     post: yup
@@ -28,7 +29,8 @@ export default function PostForm(){
             console.log('POST BODY',values)
             Fetch.post('posts', {
                 post : values.post,
-                checked : false
+                checked : false,
+                id : shortid.generate()
             })
             setPosts([...posts, {post : values.post}])
             setToggle(!false)

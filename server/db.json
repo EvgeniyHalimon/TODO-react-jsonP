@@ -1,4 +1,17 @@
 {
   "posts": [],
-  "users": []
+  "users": [
+    {
+      "username": "Dawg",
+      "email": "q@mail.com",
+      "password": "12345678",
+      "id": "_pVZq3UWP"
+    },
+    {
+      "username": "qwerty",
+      "email": "w@mail.com",
+      "password": "12345678",
+      "id": "oQ_-LrUa2"
+    }
+  ]
 }

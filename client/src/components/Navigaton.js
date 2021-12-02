@@ -15,7 +15,7 @@ export default function Navigation(){
                     <Nav>
                         <Link to="/register">Register</Link>
                         <Link to="/login">Login</Link>
-                        <Link to="/">Logout</Link>
+                        {/* <Link to="/">Logout</Link> */}
                     </Nav>
                 </Navbar.Collapse>
             </Container>
