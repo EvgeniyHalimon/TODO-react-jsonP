@@ -18,3 +18,15 @@
   justify-content: space-between;
   word-wrap: break-word;
 }
+
+#done{
+  background-color:#ace3b6;
+}
+
+#undone{
+  background-color: #eb7b67;
+}
+
+.handlers{
+  cursor: pointer;
+}

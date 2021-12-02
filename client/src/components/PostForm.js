@@ -5,6 +5,8 @@ import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
 import PostList from './PostList';
 import shortid from 'shortid';
+import { Storage } from '../utils/Storage';
+import Welcome from './Welcome';
 
 const validationSchema = yup.object({
     post: yup
@@ -14,11 +16,15 @@ const validationSchema = yup.object({
         .required('Post is required'),
 })
 
+const userId = Storage.getData('account')
+
 export default function PostForm(){
 
     const [toggle, setToggle] = useState(false)
     const [posts, setPosts] = useState([])
     const [deletePost, setDeletePost] = useState(false)
+    const [checked, setChecked] = useState(false)
+    const [name, setName] = useState('Please register')
 
     const formik = useFormik({
         initialValues: {
@@ -30,15 +36,32 @@ export default function PostForm(){
             Fetch.post('posts', {
                 post : values.post,
                 checked : false,
-                id : shortid.generate()
+                id : shortid.generate(), 
+                date: new Date().toLocaleDateString('en-GB'),
+                userId: userId.slice(1, -1)
             })
             setPosts([...posts, {post : values.post}])
             setToggle(!false)
+            setChecked(false)
             actions.resetForm()
         },
     })
 
-    
+    const handleChange = async (e) => {
+        console.log(e.target.id)
+        e.currentTarget.style.background = "green"
+        await Fetch.patch(`posts/${e.target.id}`,{
+            checked : true
+        })
+        setChecked(true)
+    }
+
+    async function getUser(){
+        if(userId !== null){
+            const data = await Fetch.get(`users/${userId.slice(1, -1)}`)
+            setName(data.data.username)
+        }
+    }
 
     const handleDelete = (e) => {
         Fetch.delete(`posts/${e.target.id}`)
@@ -47,14 +70,18 @@ export default function PostForm(){
     
     useEffect(() => {
         async function getPosts(){
-            const data = await Fetch.get('posts')
-            console.log(data.data)
-            setPosts(data.data)
-            setToggle(!true)
-            setDeletePost(false)
+            if(userId !== null){
+                const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
+                console.log(data.data)
+                setPosts(data.data)
+                setToggle(!true)
+                setDeletePost(false)
+                setChecked(false)
+            }
         }
         getPosts()
-    }, [toggle, deletePost]);
+        getUser()
+    }, [toggle, deletePost, checked, name]);
     
     return(
         <Box
@@ -62,7 +89,7 @@ export default function PostForm(){
             onSubmit={formik.handleSubmit}
             component="form"
         >
-            <h1>Post form</h1>
+            <h1>Welcome back, {name}</h1>
             <FormControl 
             fullWidth
             className='mb-3'
@@ -84,7 +111,7 @@ export default function PostForm(){
                     Submit
                 </Button>
             </FormControl>
-            <PostList array={posts} onClick={handleDelete}/>
+            <PostList array={posts} onClick={handleDelete} change={handleChange}/>
         </Box>
     )
 }

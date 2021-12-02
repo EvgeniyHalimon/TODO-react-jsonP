@@ -1,5 +1,20 @@
 {
-  "posts": [],
+  "posts": [
+    {
+      "post": "i am dawg",
+      "checked": false,
+      "id": "PHdIi2JXh",
+      "date": "02/12/2021",
+      "userId": "_pVZq3UWP"
+    },
+    {
+      "post": "i am doge",
+      "checked": false,
+      "id": "dFNyIgLp7R",
+      "date": "02/12/2021",
+      "userId": "_pVZq3UWP"
+    }
+  ],
   "users": [
     {
       "username": "Dawg",
@@ -12,6 +27,12 @@
       "email": "w@mail.com",
       "password": "12345678",
       "id": "oQ_-LrUa2"
+    },
+    {
+      "username": "doge",
+      "email": "a@mail.com",
+      "password": "12345678",
+      "id": "V0sFi6eYL"
     }
   ]
 }

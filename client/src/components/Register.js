@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import shortid from 'shortid'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
+import {useNavigate} from 'react-router-dom'
 
 const validationSchema = yup.object({
     username: yup
@@ -22,6 +23,8 @@ const validationSchema = yup.object({
 })
 
 export default function Register(){
+    const navigate = useNavigate()
+
     const formik = useFormik({
         initialValues: {
             username: '',
@@ -38,6 +41,7 @@ export default function Register(){
                         password : values.password,
                         id: shortid.generate()
                     })
+                    navigate('/login')
                 } 
             })
         },

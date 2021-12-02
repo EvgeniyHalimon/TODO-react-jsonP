@@ -1,10 +1,8 @@
 import React from 'react';
-import { Card, CloseButton,  } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import shortid from 'shortid';
-import {CheckLg} from 'react-bootstrap-icons'
 
-
-export default function PostList({array, onClick}){
+export default function PostList({array, onClick, change}){
     return(
         <div className='cards'>
             {
@@ -12,14 +10,15 @@ export default function PostList({array, onClick}){
                     <Card 
                         body
                         className='list-item mb-3'
+                        id={item.checked ? 'done' : 'undone'}
                         key={shortid.generate()} 
                     >
                         <p 
                             style={{wordBreak : 'break-word', marginRight : '5px', textAlign : 'left'}}
                         >{item.post}</p>
-                        <div>
-                            <CheckLg id={item.id} color={'green'} size={30}/>
-                            <CloseButton onClick={onClick} id={item.id}/>
+                        <div style={{display : 'flex'}}>
+                            <p className='handlers' id={item.id}  onClick={change}>&#9989;</p>
+                            <p className='handlers' onClick={onClick} id={item.id}>&#10060;</p>
                         </div>
                     </Card>
                 )

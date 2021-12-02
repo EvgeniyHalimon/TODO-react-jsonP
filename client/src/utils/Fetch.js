@@ -9,8 +9,8 @@ export class Fetch{
         return axios.post(`http://localhost:3000/${url}`, body)
     }
 
-    static put(url,body){
-        return axios.put(`http://localhost:3000/${url}`, body)
+    static patch(url,body){
+        return axios.patch(`http://localhost:3000/${url}`, body)
     }
 
     static delete(url){

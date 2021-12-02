@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
 import { Storage } from '../utils/Storage';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
     email: yup
@@ -17,6 +18,8 @@ const validationSchema = yup.object({
 })
 
 export default function Login(){
+    const navigate = useNavigate()
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -28,7 +31,8 @@ export default function Login(){
                 if((res.data[0].email === values.email) 
                     && (res.data[0].password === values.password)){
                     console.log(1)
-                    Storage.setData('account', res.data[0].userId)
+                    Storage.setData('account', res.data[0].id)
+                    navigate('/dashboard')
                 } 
             })
         },
