@@ -6,7 +6,7 @@ import { Fetch } from '../utils/Fetch';
 import PostList from './PostList';
 import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
-import Welcome from './Welcome';
+import Paginate from './Paginate';
 
 const validationSchema = yup.object({
     post: yup
@@ -67,6 +67,23 @@ export default function PostForm(){
         Fetch.delete(`posts/${e.target.id}`)
         setDeletePost(true)
     }
+
+    const getPage = () => {
+        return console.log('bork')
+    }
+    const getFirstPage = () => {
+        return console.log('bork')
+    }
+    const getPrevPage = () => {
+        return console.log('bork')
+    }
+    const getNextPage = () => {
+        return console.log('bork')
+    }
+    const getLastPage = () => {
+        return console.log('bork')
+    }
+    
     
     useEffect(() => {
         async function getPosts(){
@@ -112,6 +129,13 @@ export default function PostForm(){
                 </Button>
             </FormControl>
             <PostList array={posts} onClick={handleDelete} change={handleChange}/>
+            <Paginate
+                getPage={getPage}
+                getFirstPage={getFirstPage}
+                getPrevPage={getPrevPage}
+                getNextPage={getNextPage}
+                getLastPage={getLastPage}
+            />
         </Box>
     )
 }
