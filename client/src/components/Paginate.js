@@ -3,21 +3,23 @@ import shortid from 'shortid';
 import { Pagination } from 'react-bootstrap';
 import { Fetch } from '../utils/Fetch';
 import { Storage } from '../utils/Storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPageQuantity } from '../actions/actions';
 
 const userId = Storage.getData('account')
 
 export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPage, getLastPage, activePage}){
-    const [number, setNumber] = useState(1)
+    const dispatch = useDispatch()
+    const pageQuantity = useSelector(state => state.pageQua)
     let items = []
-    const pageQua = Math.ceil(number / 5)
-
+    const pageQua = Math.ceil(pageQuantity / 5)
     useEffect(() => {
         async function getLimit(){
-            const arrLegth = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
-            setNumber(arrLegth.data.length)
+            const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
+            dispatch(setPageQuantity(posts.data.length))
         }
         getLimit()
-    },[number]);
+    },[pageQuantity]);
 
     for (let num = 1; num <= pageQua; num++) {
         items.push(
@@ -32,7 +34,7 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
         );
     }
 
-    console.log('NUMBER STATE',number)
+    console.log('NUMBER STATE', pageQuantity)
 
     return(
         <Pagination style={{justifyContent : 'center'}}>

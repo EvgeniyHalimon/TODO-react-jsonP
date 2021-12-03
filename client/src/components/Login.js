@@ -30,7 +30,6 @@ export default function Login(){
             Fetch.get(`users/?email=${values.email}`).then(res => {
                 if((res.data[0].email === values.email) 
                     && (res.data[0].password === values.password)){
-                    console.log(1)
                     Storage.setData('account', res.data[0].id)
                     navigate('/dashboard')
                 } 

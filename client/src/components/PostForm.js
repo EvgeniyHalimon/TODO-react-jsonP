@@ -7,6 +7,7 @@ import PostList from './PostList';
 import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
+import { useSelector, useDispatch } from 'react-redux';
 
 const validationSchema = yup.object({
     post: yup
@@ -28,8 +29,9 @@ export default function PostForm(){
     const [page, setPage] = useState(1)
     const [activePage, setActivePage] = useState(1)
 
-    const pageQua = Math.ceil(posts.length / 5)
-    console.log('pageQuap', posts.length)
+    const pageQuantity = useSelector(state => state.pageQua)
+    const dispatch = useDispatch()
+    const pageQua = Math.ceil(pageQuantity / 5)
 
     const formik = useFormik({
         initialValues: {
@@ -37,7 +39,6 @@ export default function PostForm(){
         },
         validationSchema: validationSchema,
         onSubmit: (values, actions) => {
-            console.log('POST BODY',values)
             Fetch.post('posts', {
                 post : values.post,
                 checked : false,
@@ -53,7 +54,6 @@ export default function PostForm(){
     })
 
     const handleChange = async (e) => {
-        console.log(e.target.id)
         e.currentTarget.style.background = "green"
         await Fetch.patch(`posts/${e.target.id}`,{
             checked : true
@@ -76,34 +76,40 @@ export default function PostForm(){
     const getPage = async (e) => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=5`)
         setPosts(data.data)
-        setActivePage(e.target.id)
+        setActivePage(Number(e.target.id))
         setPage(e.target.id)
-        console.log('ACTIVE',activePage)
     }
     const getFirstPage = async () => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=5`)
+        setActivePage(Number(1))
         setPosts(data.data)
     }
+
     const getPrevPage = async () => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page-1}&_limit=5`)
-        console.log('PREV',data.data)
+        setActivePage(page - 1)
         setPosts(data.data)
     }
+
     const getNextPage = async () => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page+1}&_limit=5`)
-        console.log('NEXT',data.data)
+        setActivePage(page + 1)
         setPosts(data.data)
     }
-    const getLastPage = () => {
-        return console.log('bork')
+
+    const getLastPage = async () => {
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=5`)
+        setActivePage(Number(pageQua))
+        setPosts(data.data)
     }
     
-    
+/* console.log('PAGE QUA', pageQua)
+console.log('PAGE NUM', page) */
+
     useEffect(() => {
         async function getPosts(){
             if(userId !== null){
                 const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
-                console.log(data.data)
                 setPosts(data.data)
                 setToggle(!true)
                 setDeletePost(false)

@@ -6,19 +6,25 @@ import Dashboard from './components/Dashboard';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Navigation from './components/Navigaton';
 import Welcome from './components/Welcome';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from './reducers/reducer';
 
+const store = createStore(reducer)
 
 function App() {
   return (
-    <BrowserRouter>
-    <Navigation/>
-      <Routes>
-        <Route path='/' element={<Welcome/>}/>
-        <Route path='/register' element={<Register/>}/>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Navigation/>
+          <Routes>
+            <Route path='/' element={<Welcome/>}/>
+            <Route path='/register' element={<Register/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
+          </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
