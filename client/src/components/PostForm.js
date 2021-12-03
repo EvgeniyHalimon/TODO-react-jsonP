@@ -25,6 +25,11 @@ export default function PostForm(){
     const [deletePost, setDeletePost] = useState(false)
     const [checked, setChecked] = useState(false)
     const [name, setName] = useState('Please register')
+    const [page, setPage] = useState(1)
+    const [activePage, setActivePage] = useState(1)
+
+    const pageQua = Math.ceil(posts.length / 5)
+    console.log('pageQuap', posts.length)
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +46,7 @@ export default function PostForm(){
                 userId: userId.slice(1, -1)
             })
             setPosts([...posts, {post : values.post}])
-            setToggle(!false)
+            setToggle(true)
             setChecked(false)
             actions.resetForm()
         },
@@ -68,17 +73,26 @@ export default function PostForm(){
         setDeletePost(true)
     }
 
-    const getPage = () => {
-        return console.log('bork')
+    const getPage = async (e) => {
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=5`)
+        setPosts(data.data)
+        setActivePage(e.target.id)
+        setPage(e.target.id)
+        console.log('ACTIVE',activePage)
     }
-    const getFirstPage = () => {
-        return console.log('bork')
+    const getFirstPage = async () => {
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=5`)
+        setPosts(data.data)
     }
-    const getPrevPage = () => {
-        return console.log('bork')
+    const getPrevPage = async () => {
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page-1}&_limit=5`)
+        console.log('PREV',data.data)
+        setPosts(data.data)
     }
-    const getNextPage = () => {
-        return console.log('bork')
+    const getNextPage = async () => {
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page+1}&_limit=5`)
+        console.log('NEXT',data.data)
+        setPosts(data.data)
     }
     const getLastPage = () => {
         return console.log('bork')
@@ -88,7 +102,7 @@ export default function PostForm(){
     useEffect(() => {
         async function getPosts(){
             if(userId !== null){
-                const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
+                const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
                 console.log(data.data)
                 setPosts(data.data)
                 setToggle(!true)
@@ -135,6 +149,7 @@ export default function PostForm(){
                 getPrevPage={getPrevPage}
                 getNextPage={getNextPage}
                 getLastPage={getLastPage}
+                activePage={activePage}
             />
         </Box>
     )
