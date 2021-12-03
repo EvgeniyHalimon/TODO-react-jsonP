@@ -86,15 +86,21 @@ export default function PostForm(){
     }
 
     const getPrevPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page-1}&_limit=5`)
-        setActivePage(page - 1)
-        setPosts(data.data)
+        if(Number(page) > 1){
+            setPage(Number(page) - 1)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            setActivePage(Number(page) - 1)
+            setPosts(data.data)
+        }
     }
 
     const getNextPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page+1}&_limit=5`)
-        setActivePage(page + 1)
-        setPosts(data.data)
+        if(Number(page) < pageQua){
+            setPage(Number(page) + 1)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            setActivePage(Number(page) + 1)
+            setPosts(data.data)
+        }
     }
 
     const getLastPage = async () => {
@@ -103,8 +109,8 @@ export default function PostForm(){
         setPosts(data.data)
     }
     
-/* console.log('PAGE QUA', pageQua)
-console.log('PAGE NUM', page) */
+console.log('PAGE QUA', pageQua)
+console.log('PAGE NUM', page)
 
     useEffect(() => {
         async function getPosts(){
@@ -118,7 +124,7 @@ console.log('PAGE NUM', page) */
         }
         getPosts()
         getUser()
-    }, [toggle, deletePost, checked, name]);
+    }, [toggle, deletePost, checked, name, page]);
     
     return(
         <Box
