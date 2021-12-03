@@ -40,12 +40,19 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
     }
 
     return(
-        <Pagination style={{justifyContent : 'center'}}>
-            <Pagination.First onClick={getFirstPage} />
-            <Pagination.Prev onClick={getPrevPage} />
-                {items}
-            <Pagination.Next onClick={getNextPage} />
-            <Pagination.Last onClick={getLastPage} />
-        </Pagination>
+        <div>
+            {
+                items.length === 0 ? 
+                <h1>&#10031; No posts yet &#10031;</h1> :
+                <Pagination style={{justifyContent : 'center'}}>
+                    <Pagination.First onClick={getFirstPage} />
+                    <Pagination.Prev onClick={getPrevPage} />
+                        {items}
+                    <Pagination.Next onClick={getNextPage} />
+                    <Pagination.Last onClick={getLastPage} />
+                </Pagination> 
+            }
+        </div>
+        
     )
 }
