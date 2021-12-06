@@ -34,7 +34,7 @@ export default function Navigation(){
                         <Link to="/dashboard">Dashboard</Link>
                     </Nav>
                     <Nav>
-                    { account || user  ? 
+                    { user || account  ? 
                         <Link 
                             to="/"
                             onClick={logout}

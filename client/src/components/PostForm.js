@@ -110,21 +110,20 @@ export default function PostForm(){
         setPosts(data.data)
     }
 
-    
+    async function getPosts(){
+        if(userId !== null){
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            const name = await Fetch.get(`users/${userId.slice(1, -1)}`)
+            dispatch(setName(name.data.username))
+            setPosts(data.data)
+            setToggle(false)
+            setDeletePost(false)
+            setChecked(false)
+            console.log('=================================================================')
+        }
+    }
 
     useEffect(() => {
-        async function getPosts(){
-            if(userId !== null){
-                const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
-                const name = await Fetch.get(`users/${userId.slice(1, -1)}`)
-                dispatch(setName(name.data.username))
-                setPosts(data.data)
-                setToggle(false)
-                setDeletePost(false)
-                setChecked(false)
-                console.log('=================================================================')
-            }
-        }
         getPosts()
     }, [toggle, deletePost, checked, name, page, postQuantity, pageQua]);
     

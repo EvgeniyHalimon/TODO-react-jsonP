@@ -26,7 +26,6 @@ const setName = (name) => {
     }
 }
 
-
 export{
     setPostQuantity,
     setPageQuantity,
