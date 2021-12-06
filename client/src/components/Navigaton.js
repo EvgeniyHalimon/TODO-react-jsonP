@@ -3,13 +3,14 @@ import {Navbar,Container,Nav} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Storage } from '../utils/Storage';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUserId } from '../actions/actions';
+import { setLogout, setUserId } from '../actions/actions';
 
 
 
 export default function Navigation(){
     const account = Storage.getData('account')
     const user = useSelector(state => state.userID)
+    const posts = useSelector(state => state.postQua)
     const dispatch =  useDispatch()
     dispatch(setUserId(account))
 
@@ -18,7 +19,8 @@ export default function Navigation(){
 
     const logout = () => {
         Storage.removeData('account')
-        dispatch(setUserId(null))
+        dispatch(setLogout(true))
+        console.log(posts)
     }
 
     useEffect(() => {

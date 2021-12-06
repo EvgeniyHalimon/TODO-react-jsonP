@@ -26,9 +26,25 @@ const setName = (name) => {
     }
 }
 
+const setData = (array) => {
+    return {
+        type: 'SET_DATA',
+        payload: array
+    }
+}
+
+const setLogout = (bool) => {
+    return {
+        type: 'SET_LOGOUT',
+        payload: bool
+    }
+}
+
 export{
     setPostQuantity,
     setPageQuantity,
     setUserId,
-    setName
+    setName,
+    setData,
+    setLogout
 }

@@ -27,8 +27,8 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
     useEffect(() => {
     },[postQuantity, pageQuantity]);
 
-    // console.log('PAGE QUANTITY PAGINATE COMP', pageQuantity)
-
+    console.log('PAGE QUANTITY PAGINATE COMP', pageQuantity)
+    console.log('POST QUANTITY', postQuantity)
     for (let num = 1; num <= pageQuantity; num++) {
         items.push(
             <Pagination.Item 

@@ -8,7 +8,7 @@ import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
-import { setName, setPageQuantity, setPostQuantity, setUserId } from '../actions/actions';
+import { setData, setName, setPageQuantity, setPostQuantity, setUserId } from '../actions/actions';
 
 const validationSchema = yup.object({
     post: yup
@@ -18,13 +18,13 @@ const validationSchema = yup.object({
         .required('Post is required'),
 })
 
-const userId = Storage.getData('account')
+
 const limit = 5
 
 export default function PostForm(){
-
+    const userId = Storage.getData('account')
     const [toggle, setToggle] = useState(false)
-    const [posts, setPosts] = useState([])
+    //const [posts, setPosts] = useState([])
     const [deletePost, setDeletePost] = useState(false)
     const [checked, setChecked] = useState(false)
     const [page, setPage] = useState(1)
@@ -34,6 +34,8 @@ export default function PostForm(){
     const postQuantity = useSelector(state => state.postQua)
     const pageQua = useSelector(state => state.pageQua)
     const name = useSelector(state => state.name)
+    const POSTS = useSelector(state => state.array)
+    console.log('==========================================POSTS==========================================',POSTS)
 
     const formik = useFormik({
         initialValues: {
@@ -48,7 +50,8 @@ export default function PostForm(){
                 date: new Date().toLocaleDateString('en-GB'),
                 userId: userId.slice(1, -1)
             })
-            setPosts([...posts, {post : values.post}])
+            //setPosts([...posts, {post : values.post}])
+            dispatch(setData([...POSTS, {post : values.post}]))
             setToggle(true)
             setChecked(false)
             dispatch(setPostQuantity(Number(postQuantity) + 1))
@@ -72,20 +75,21 @@ export default function PostForm(){
         dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
         if(pageQua === Number(page)){
             setActivePage(activePage - 1)
-            console.log(activePage - 1)
-            getActivePage()
-        }
+            /* getActivePage() */
+            if (Number(page) === 1){
+                setActivePage(1)
+            }
+        } 
     }
 
-    async function getActivePage(){
+    /* async function getActivePage(){
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${activePage - 1}&_limit=${limit}`)
-        console.log(data)
-        setPosts(data.data)
-    }
+        dispatch(setData(data.data))
+    } */
 
     const getPage = async (e) => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=${limit}`)
-        setPosts(data.data)
+        dispatch(setData(data.data))
         setActivePage(Number(e.target.id))
         setPage(e.target.id)
     }
@@ -94,7 +98,7 @@ export default function PostForm(){
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=${limit}`)
         setActivePage(Number(1))
         setPage(1)
-        setPosts(data.data)
+        dispatch(setData(data.data))
     }
 
     const getPrevPage = async () => {
@@ -102,7 +106,7 @@ export default function PostForm(){
             setPage(Number(page) - 1)
             const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
             setActivePage(Number(page) - 1)
-            setPosts(data.data)
+            dispatch(setData(data.data))
         }
     }
 
@@ -111,7 +115,7 @@ export default function PostForm(){
             setPage(Number(page) + 1)
             const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
             setActivePage(Number(page) + 1)
-            setPosts(data.data)
+            dispatch(setData(data.data))
         }
     }
 
@@ -119,15 +123,17 @@ export default function PostForm(){
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=${limit}`)
         setActivePage(Number(pageQua))
         setPage(Number(pageQua))
-        setPosts(data.data)
+        dispatch(setData(data.data))
     }
 
     async function getPosts(){
-        if(userId !== null){
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
-            const name = await Fetch.get(`users/${userId.slice(1, -1)}`)
+        const _userId = Storage.getData('account');
+
+        if(_userId !== null){
+            const data = await Fetch.get(`posts?userId=${_userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
+            const name = await Fetch.get(`users/${_userId.slice(1, -1)}`)
             dispatch(setName(name.data.username))
-            setPosts(data.data)
+            dispatch(setData(data.data))
             setToggle(false)
             setDeletePost(false)
             setChecked(false)
@@ -166,7 +172,7 @@ export default function PostForm(){
                     Submit
                 </Button>
             </FormControl>
-            <PostList array={posts} onClick={handleDelete} change={handleChange}/>
+            <PostList array={POSTS} onClick={handleDelete} change={handleChange}/>
             <Paginate
                 getPage={getPage}
                 getFirstPage={getFirstPage}

@@ -2,7 +2,9 @@ const initialState ={
     postQua : 0,
     pageQua : 0,
     userID : null,
-    name :"Please register"
+    name :"Please register",
+    array: [],
+    logout : false
 }
 
 const reducer = (state = initialState, action) => {
@@ -28,6 +30,21 @@ const reducer = (state = initialState, action) => {
             ...state,
             name: action.payload
         }
+    case 'SET_DATA':
+        return {
+            ...state,
+            array: action.payload
+        }
+    case 'SET_LOGOUT': {
+        return {
+            postQua : 0,
+            pageQua : 0,
+            userID : null,
+            name : "Please register",
+            array: [],
+            logout : action.payload
+        }
+    }
     default:
         return state
     }
