@@ -11,6 +11,7 @@ export default function Navigation(){
     const account = Storage.getData('account')
     const user = useSelector(state => state.userID)
     const dispatch =  useDispatch()
+    dispatch(setUserId(account))
 
     console.log("================NAVI ACC================", account)
     console.log("===============NAVI ACC REDUX===============", user)
@@ -21,8 +22,7 @@ export default function Navigation(){
     }
 
     useEffect(() => {
-        
-    }, [user, account]);
+    }, [account, user]);
     
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="success">
@@ -34,7 +34,7 @@ export default function Navigation(){
                         <Link to="/dashboard">Dashboard</Link>
                     </Nav>
                     <Nav>
-                    { user || account  ? 
+                    { account || user  ? 
                         <Link 
                             to="/"
                             onClick={logout}

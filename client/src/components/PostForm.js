@@ -8,7 +8,7 @@ import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
-import { setName, setPageQuantity, setPostQuantity } from '../actions/actions';
+import { setName, setPageQuantity, setPostQuantity, setUserId } from '../actions/actions';
 
 const validationSchema = yup.object({
     post: yup
@@ -19,6 +19,7 @@ const validationSchema = yup.object({
 })
 
 const userId = Storage.getData('account')
+const limit = 5
 
 export default function PostForm(){
 
@@ -77,20 +78,20 @@ export default function PostForm(){
     }
 
     async function getActivePage(){
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${activePage - 1}&_limit=5`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${activePage - 1}&_limit=${limit}`)
         console.log(data)
         setPosts(data.data)
     }
 
     const getPage = async (e) => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=5`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=${limit}`)
         setPosts(data.data)
         setActivePage(Number(e.target.id))
         setPage(e.target.id)
     }
 
     const getFirstPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=5`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=${limit}`)
         setActivePage(Number(1))
         setPage(1)
         setPosts(data.data)
@@ -99,7 +100,7 @@ export default function PostForm(){
     const getPrevPage = async () => {
         if(Number(page) > 1){
             setPage(Number(page) - 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
             setActivePage(Number(page) - 1)
             setPosts(data.data)
         }
@@ -108,14 +109,14 @@ export default function PostForm(){
     const getNextPage = async () => {
         if(Number(page) < pageQua){
             setPage(Number(page) + 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
             setActivePage(Number(page) + 1)
             setPosts(data.data)
         }
     }
 
     const getLastPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=5`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=${limit}`)
         setActivePage(Number(pageQua))
         setPage(Number(pageQua))
         setPosts(data.data)
@@ -123,7 +124,7 @@ export default function PostForm(){
 
     async function getPosts(){
         if(userId !== null){
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
             const name = await Fetch.get(`users/${userId.slice(1, -1)}`)
             dispatch(setName(name.data.username))
             setPosts(data.data)
@@ -132,8 +133,6 @@ export default function PostForm(){
             setChecked(false)
         }
     }
-
-    
 
     useEffect(() => {
         getPosts()

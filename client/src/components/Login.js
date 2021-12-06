@@ -33,9 +33,9 @@ export default function Login(){
             Fetch.get(`users/?email=${values.email}`).then(res => {
                 if((res.data[0].email === values.email) 
                     && (res.data[0].password === values.password)){
+                    Storage.setData('account', res.data[0].id)
                     dispatch(setUserId(res.data[0].id))
                     dispatch(setName(res.data[0].username))
-                    Storage.setData('account', res.data[0].id)
                     navigate('/dashboard')
                 } 
             })
