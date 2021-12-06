@@ -14,14 +14,19 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
     const pageQuantity = useSelector(state => state.pageQua)
 
     let items = []
-    
-    useEffect(() => {
+
+    if(userId !== null){
         async function getLimit(){
             const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
             dispatch(setPostQuantity(posts.data.length))
             dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
         }
         getLimit()
+    }
+
+    useEffect(() => {
+        
+        
     },[postQuantity, pageQuantity]);
 
     console.log('PAGE QUANTITY PAGINATE COMP', pageQuantity)

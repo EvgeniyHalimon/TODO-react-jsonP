@@ -1,6 +1,8 @@
 const initialState ={
     postQua : 0,
-    pageQua : 1
+    pageQua : 0,
+    userID : null,
+    name :"Please register"
 }
 
 const reducer = (state = initialState, action) => {
@@ -15,6 +17,16 @@ const reducer = (state = initialState, action) => {
         return {
             ...state,
             pageQua : action.payload
+        }
+    case 'SET_USER_ID':
+        return {
+            ...state,
+            userID : action.payload
+        }
+    case 'SET_NAME':
+        return {
+            ...state,
+            name: action.payload
         }
     default:
         return state

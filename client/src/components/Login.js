@@ -5,6 +5,8 @@ import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
 import { Storage } from '../utils/Storage';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUserId } from '../actions/actions';
 
 const validationSchema = yup.object({
     email: yup
@@ -19,6 +21,7 @@ const validationSchema = yup.object({
 
 export default function Login(){
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const formik = useFormik({
         initialValues: {
@@ -30,6 +33,7 @@ export default function Login(){
             Fetch.get(`users/?email=${values.email}`).then(res => {
                 if((res.data[0].email === values.email) 
                     && (res.data[0].password === values.password)){
+                    dispatch(setUserId(res.data[0].id))
                     Storage.setData('account', res.data[0].id)
                     navigate('/dashboard')
                 } 

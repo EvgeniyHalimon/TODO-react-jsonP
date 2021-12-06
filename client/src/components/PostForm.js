@@ -8,7 +8,7 @@ import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPageQuantity, setPostQuantity } from '../actions/actions';
+import { setName, setPageQuantity, setPostQuantity } from '../actions/actions';
 
 const validationSchema = yup.object({
     post: yup
@@ -26,13 +26,13 @@ export default function PostForm(){
     const [posts, setPosts] = useState([])
     const [deletePost, setDeletePost] = useState(false)
     const [checked, setChecked] = useState(false)
-    const [name, setName] = useState('Please register')
     const [page, setPage] = useState(1)
     const [activePage, setActivePage] = useState(1)
 
-    const postQuantity = useSelector(state => state.postQua)
     const dispatch = useDispatch()
+    const postQuantity = useSelector(state => state.postQua)
     const pageQua = useSelector(state => state.pageQua)
+    const name = useSelector(state => state.name)
 
     const formik = useFormik({
         initialValues: {
@@ -56,21 +56,12 @@ export default function PostForm(){
         },
     })
 
-    console.log(postQuantity)
-
     const handleChange = async (e) => {
         e.currentTarget.style.background = "green"
         await Fetch.patch(`posts/${e.target.id}`,{
             checked : true
         })
         setChecked(true)
-    }
-
-    async function getUser(){
-        if(userId !== null){
-            const data = await Fetch.get(`users/${userId.slice(1, -1)}`)
-            setName(data.data.username)
-        }
     }
 
     const handleDelete = (e) => {
@@ -80,14 +71,13 @@ export default function PostForm(){
         dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
     }
 
-console.log(posts)
-
     const getPage = async (e) => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=5`)
         setPosts(data.data)
         setActivePage(Number(e.target.id))
         setPage(e.target.id)
     }
+
     const getFirstPage = async () => {
         const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=5`)
         setActivePage(Number(1))
@@ -119,23 +109,23 @@ console.log(posts)
         setPage(Number(pageQua))
         setPosts(data.data)
     }
-    
-/* console.log('PAGE QUA', pageQua)
-console.log('PAGE NUM', page) */
 
-    async function getPosts(){
-        if(userId !== null){
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
-            setPosts(data.data)
-            setToggle(!true)
-            setDeletePost(false)
-            setChecked(false)
-        }
-    }
+    
 
     useEffect(() => {
+        async function getPosts(){
+            if(userId !== null){
+                const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=5`)
+                const name = await Fetch.get(`users/${userId.slice(1, -1)}`)
+                dispatch(setName(name.data.username))
+                setPosts(data.data)
+                setToggle(false)
+                setDeletePost(false)
+                setChecked(false)
+                console.log('=================================================================')
+            }
+        }
         getPosts()
-        getUser()
     }, [toggle, deletePost, checked, name, page, postQuantity, pageQua]);
     
     return(
