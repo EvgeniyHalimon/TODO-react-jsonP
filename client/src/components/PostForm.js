@@ -23,8 +23,7 @@ const limit = 5
 
 export default function PostForm(){
     const userId = Storage.getData('account')
-    const [toggle, setToggle] = useState(false)
-    //const [posts, setPosts] = useState([])
+    const [addPost, setAddPost] = useState(false)
     const [deletePost, setDeletePost] = useState(false)
     const [checked, setChecked] = useState(false)
     const [page, setPage] = useState(1)
@@ -52,8 +51,8 @@ export default function PostForm(){
             })
             //setPosts([...posts, {post : values.post}])
             dispatch(setData([...POSTS, {post : values.post}]))
-            setToggle(true)
-            setChecked(false)
+            setAddPost(true)
+            //setChecked(false)
             dispatch(setPostQuantity(Number(postQuantity) + 1))
             dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
             actions.resetForm()
@@ -73,13 +72,10 @@ export default function PostForm(){
         setDeletePost(true)
         dispatch(setPostQuantity(Number(postQuantity) - 1))
         dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
-        if(pageQua === Number(page)){
-            setActivePage(activePage - 1)
-            /* getActivePage() */
-            if (Number(page) === 1){
-                setActivePage(1)
-            }
-        } 
+        if (Number(pageQua) === 1){
+            setActivePage(1)
+        }
+        
     }
 
     /* async function getActivePage(){
@@ -126,23 +122,20 @@ export default function PostForm(){
         dispatch(setData(data.data))
     }
 
-    async function getPosts(){
-        const _userId = Storage.getData('account');
-
-        if(_userId !== null){
-            const data = await Fetch.get(`posts?userId=${_userId.slice(1, -1)}&_page=${page}&_limit=${limit}`)
-            const name = await Fetch.get(`users/${_userId.slice(1, -1)}`)
-            dispatch(setName(name.data.username))
-            dispatch(setData(data.data))
-            setToggle(false)
-            setDeletePost(false)
-            setChecked(false)
-        }
-    }
-
     useEffect(() => {
-        getPosts()
-    }, [toggle, deletePost, checked, name, page, postQuantity, pageQua, activePage]);
+        const ID = Storage.getData('account');
+        if(ID !== null){
+            Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${page}&_limit=${limit}`)
+            .then(res => {
+                dispatch(setData(res.data))
+                setAddPost(false)
+                setDeletePost(false)
+                setChecked(false)
+            })
+            Fetch.get(`users/${ID.slice(1, -1)}`)
+            .then(res => dispatch(setName(res.data.username)))
+        }
+    }, [addPost, deletePost, checked, pageQua]);
     
     return(
         <Box

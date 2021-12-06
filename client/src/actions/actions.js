@@ -33,12 +33,12 @@ const setData = (array) => {
     }
 }
 
-const setLogout = (bool) => {
+/* const setLogout = (bool) => {
     return {
         type: 'SET_LOGOUT',
         payload: bool
     }
-}
+} */
 
 export{
     setPostQuantity,
@@ -46,5 +46,5 @@ export{
     setUserId,
     setName,
     setData,
-    setLogout
+    //setLogout
 }

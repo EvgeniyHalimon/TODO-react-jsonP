@@ -6,7 +6,7 @@ import { Storage } from '../utils/Storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPageQuantity, setPostQuantity } from '../actions/actions';
 
-const userId = Storage.getData('account')
+
 
 export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPage, getLastPage, activePage}){
     const dispatch = useDispatch()
@@ -15,16 +15,18 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
 
     let items = []
 
-    if(userId !== null){
-        async function getLimit(){
-            const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
-            dispatch(setPostQuantity(posts.data.length))
-            dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
-        }
-        getLimit()
-    }
-
     useEffect(() => {
+        const userId = Storage.getData('account')
+        if(userId !== null){
+            async function getLimit(){
+                const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
+                console.log(posts.data.length)
+                dispatch(setPostQuantity(posts.data.length))
+                console.log(postQuantity)
+                dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
+            }
+            getLimit()
+        }
     },[postQuantity, pageQuantity]);
 
     console.log('PAGE QUANTITY PAGINATE COMP', pageQuantity)

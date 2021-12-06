@@ -4,7 +4,7 @@ const initialState ={
     userID : null,
     name :"Please register",
     array: [],
-    logout : false
+    //logout : false
 }
 
 const reducer = (state = initialState, action) => {
@@ -35,7 +35,7 @@ const reducer = (state = initialState, action) => {
             ...state,
             array: action.payload
         }
-    case 'SET_LOGOUT': {
+    /* case 'SET_LOGOUT': {
         return {
             postQua : 0,
             pageQua : 0,
@@ -44,7 +44,7 @@ const reducer = (state = initialState, action) => {
             array: [],
             logout : action.payload
         }
-    }
+    } */
     default:
         return state
     }

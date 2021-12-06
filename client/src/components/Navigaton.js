@@ -3,7 +3,7 @@ import {Navbar,Container,Nav} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Storage } from '../utils/Storage';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLogout, setUserId } from '../actions/actions';
+import { setData, setName, setPageQuantity, setPostQuantity, setUserId } from '../actions/actions';
 
 
 
@@ -19,12 +19,15 @@ export default function Navigation(){
 
     const logout = () => {
         Storage.removeData('account')
-        dispatch(setLogout(true))
-        console.log(posts)
+        dispatch(setData([]))
+        dispatch(setUserId(null))
+        dispatch(setPageQuantity(null))
+        dispatch(setPostQuantity(null))
+        dispatch(setName("Please register"))
     }
 
     useEffect(() => {
-    }, [account, user]);
+    }, [account, user, posts]);
     
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="success">
