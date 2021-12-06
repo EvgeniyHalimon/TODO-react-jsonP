@@ -50,9 +50,9 @@ export default function PostForm(){
             setPosts([...posts, {post : values.post}])
             setToggle(true)
             setChecked(false)
-            actions.resetForm()
             dispatch(setPostQuantity(Number(postQuantity) + 1))
             dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
+            actions.resetForm()
         },
     })
 
@@ -69,6 +69,17 @@ export default function PostForm(){
         setDeletePost(true)
         dispatch(setPostQuantity(Number(postQuantity) - 1))
         dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
+        if(pageQua === Number(page)){
+            setActivePage(activePage - 1)
+            console.log(activePage - 1)
+            getActivePage()
+        }
+    }
+
+    async function getActivePage(){
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${activePage - 1}&_limit=5`)
+        console.log(data)
+        setPosts(data.data)
     }
 
     const getPage = async (e) => {
@@ -119,13 +130,14 @@ export default function PostForm(){
             setToggle(false)
             setDeletePost(false)
             setChecked(false)
-            console.log('=================================================================')
         }
     }
 
+    
+
     useEffect(() => {
         getPosts()
-    }, [toggle, deletePost, checked, name, page, postQuantity, pageQua]);
+    }, [toggle, deletePost, checked, name, page, postQuantity, pageQua, activePage]);
     
     return(
         <Box

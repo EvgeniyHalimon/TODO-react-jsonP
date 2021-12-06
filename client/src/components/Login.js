@@ -6,7 +6,7 @@ import { Fetch } from '../utils/Fetch';
 import { Storage } from '../utils/Storage';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUserId } from '../actions/actions';
+import { setName, setUserId } from '../actions/actions';
 
 const validationSchema = yup.object({
     email: yup
@@ -34,6 +34,7 @@ export default function Login(){
                 if((res.data[0].email === values.email) 
                     && (res.data[0].password === values.password)){
                     dispatch(setUserId(res.data[0].id))
+                    dispatch(setName(res.data[0].username))
                     Storage.setData('account', res.data[0].id)
                     navigate('/dashboard')
                 } 
