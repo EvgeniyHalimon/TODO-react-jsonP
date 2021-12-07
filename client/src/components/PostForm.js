@@ -18,7 +18,6 @@ const validationSchema = yup.object({
         .required('Post is required'),
 })
 
-
 const limit = 5
 
 export default function PostForm(){

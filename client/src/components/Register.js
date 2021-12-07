@@ -1,10 +1,11 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import shortid from 'shortid'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
 import { Fetch } from '../utils/Fetch';
 import {useNavigate} from 'react-router-dom'
+import { Alert } from 'react-bootstrap';
 
 const validationSchema = yup.object({
     username: yup
@@ -23,6 +24,7 @@ const validationSchema = yup.object({
 })
 
 export default function Register(){
+    const [user, setUser] = useState('not user')
     const navigate = useNavigate()
 
     const formik = useFormik({
@@ -43,6 +45,10 @@ export default function Register(){
                     })
                     navigate('/login')
                 } 
+                setUser(false)
+                setTimeout(() => {
+                    setUser(true)
+                }, 2000);
             })
         },
     })
@@ -89,6 +95,11 @@ export default function Register(){
                     Submit
                 </Button>
             </FormControl>
+            {
+                user ? 
+                <div></div> :
+                <Alert className='mt-3' variant='danger'>This user exists</Alert>
+            }
         </Box>
     )
 }
