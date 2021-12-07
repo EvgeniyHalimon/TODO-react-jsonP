@@ -13,12 +13,18 @@ export default function PostList({array, onClick, change}){
                         id={post.checked ? 'done' : 'undone'}
                         key={shortid.generate()} 
                     >
-                        <p 
-                            style={{wordBreak : 'break-word', marginRight : '5px', textAlign : 'left'}}
-                        >{post.post}</p>
-                        <div style={{display : 'flex'}}>
-                            <p className='handlers' id={post.id}  onClick={change}>&#9989;</p>
-                            <p className='handlers' onClick={onClick} id={post.id}>&#10060;</p>
+                        <div className='info-block'>
+                            <p 
+                                style={{wordBreak : 'break-word', marginRight : '5px', textAlign : 'left'}}
+                            >{post.post}</p>
+                            <div style={{display : 'flex'}}>
+                                <p className='handlers' id={post.id}  onClick={change}>&#9989;</p>
+                                <p className='handlers' onClick={onClick} id={post.id}>&#10060;</p>
+                            </div>
+                        </div>
+                        <div className='time-block'>
+                            <p className='date'>{post.time}</p>
+                            <p className='date'>{post.date}</p>
                         </div>
                     </Card>
                 )
