@@ -9,6 +9,7 @@ import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
 import { setData, setName, setPageQuantity, setPostQuantity } from '../actions/actions';
+import { LIMIT } from '../constants/constants';
 
 const validationSchema = yup.object({
     post: yup
@@ -17,8 +18,6 @@ const validationSchema = yup.object({
         .max(200, 'Must be 200 characters or less')
         .required('Post is required'),
 })
-
-const limit = 5
 
 export default function PostForm(){
     const userId = Storage.getData('account')
@@ -33,7 +32,7 @@ export default function PostForm(){
     const pageQua = useSelector(state => state.pageQua)
     const name = useSelector(state => state.name)
     const POSTS = useSelector(state => state.array)
-    console.log('==========================================POSTS==========================================',POSTS)
+    
 
     const formik = useFormik({
         initialValues: {
@@ -49,12 +48,9 @@ export default function PostForm(){
                 time : new Date().toLocaleTimeString('it-IT'),
                 userId: userId.slice(1, -1)
             })
-            //setPosts([...posts, {post : values.post}])
-            dispatch(setData([...POSTS, {post : values.post}]))
             setAddPost(true)
-            //setChecked(false)
             dispatch(setPostQuantity(Number(postQuantity) + 1))
-            dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
+            dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
             actions.resetForm()
         },
     })
@@ -71,27 +67,18 @@ export default function PostForm(){
         Fetch.delete(`posts/${e.target.id}`)
         setDeletePost(true)
         dispatch(setPostQuantity(Number(postQuantity) - 1))
-        dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
-        if (Number(pageQua) === 1){
-            setActivePage(1)
-        }
-        
+        dispatch(setPageQuantity(Math.ceil(Number(postQuantity) / LIMIT)))
     }
 
-    /* async function getActivePage(){
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${activePage - 1}&_limit=${limit}`)
-        dispatch(setData(data.data))
-    } */
-
     const getPage = async (e) => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         dispatch(setData(data.data))
         setActivePage(Number(e.target.id))
         setPage(e.target.id)
     }
 
     const getFirstPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         setActivePage(Number(1))
         setPage(1)
         dispatch(setData(data.data))
@@ -100,7 +87,7 @@ export default function PostForm(){
     const getPrevPage = async () => {
         if(Number(page) > 1){
             setPage(Number(page) - 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
             setActivePage(Number(page) - 1)
             dispatch(setData(data.data))
         }
@@ -109,23 +96,23 @@ export default function PostForm(){
     const getNextPage = async () => {
         if(Number(page) < pageQua){
             setPage(Number(page) + 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
             setActivePage(Number(page) + 1)
             dispatch(setData(data.data))
         }
     }
 
     const getLastPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         setActivePage(Number(pageQua))
         setPage(Number(pageQua))
         dispatch(setData(data.data))
     }
 
     useEffect(() => {
-        const ID = Storage.getData('account');
+        const ID = Storage.getData('account')
         if(ID !== null){
-            Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${page}&_limit=${limit}&_sort=date,time&_order=desc,desc`)
+            Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
             .then(res => {
                 dispatch(setData(res.data))
                 setAddPost(false)
@@ -134,6 +121,18 @@ export default function PostForm(){
             })
             Fetch.get(`users/${ID.slice(1, -1)}`)
             .then(res => dispatch(setName(res.data.username)))
+            if(POSTS.length === 0){
+                Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${Number(activePage) - 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+                .then(res => {
+                    dispatch(setData(res.data))
+                    setAddPost(false)
+                    setDeletePost(false)
+                    setChecked(false)
+                    setActivePage(Number(activePage) - 1)
+                })
+            } else {
+                setActivePage(Number(page))
+            }
         }
     }, [addPost, deletePost, checked, pageQua]);
     
@@ -165,7 +164,10 @@ export default function PostForm(){
                     Submit
                 </Button>
             </FormControl>
-            <PostList array={POSTS} onClick={handleDelete} change={handleChange}/>
+        
+                
+                <PostList array={POSTS} onClick={handleDelete} change={handleChange}/> 
+        
             <Paginate
                 getPage={getPage}
                 getFirstPage={getFirstPage}

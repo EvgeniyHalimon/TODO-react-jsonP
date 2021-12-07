@@ -3,19 +3,15 @@ import {Navbar,Container,Nav} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Storage } from '../utils/Storage';
 import { useSelector, useDispatch } from 'react-redux';
-import { setData, setLogout, setName, setPageQuantity, setPostQuantity, setUserId } from '../actions/actions';
+import { setLogout, setUserId } from '../actions/actions';
 
 
 
 export default function Navigation(){
     const account = Storage.getData('account')
     const user = useSelector(state => state.userID)
-    const posts = useSelector(state => state.postQua)
     const dispatch =  useDispatch()
     dispatch(setUserId(account))
-
-    console.log("================NAVI ACC================", account)
-    console.log("===============NAVI ACC REDUX===============", user)
 
     const logout = () => {
         Storage.removeData('account')
@@ -23,7 +19,7 @@ export default function Navigation(){
     }
 
     useEffect(() => {
-    }, [account, user, posts]);
+    }, [account, user]);
     
     return(
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="success">

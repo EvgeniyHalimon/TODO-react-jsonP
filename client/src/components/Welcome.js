@@ -4,7 +4,7 @@ import {Figure} from 'react-bootstrap'
 export default function Welcome(){
     return(
         <Figure
-            style={{display : 'block'}}
+            style={{display : 'block', backgroundColor : '#0F1015'}}
         >
             <Figure.Image
                 style={{display : 'block', margin: '0 auto'}}

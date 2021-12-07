@@ -4,11 +4,10 @@ const initialState ={
     userID : null,
     name :"Please register",
     array: [],
-    //logout : false
+    logout : false
 }
 
 const reducer = (state = initialState, action) => {
-    /* console.log('~TYPE OF ACTION~', action.type) */
     switch (action.type){
     case 'SET_POST_QUANTITY':
         return {

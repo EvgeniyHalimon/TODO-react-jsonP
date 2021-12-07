@@ -1,12 +1,11 @@
-import React,{useState, useEffect} from 'react';
+import React,{useEffect} from 'react';
 import shortid from 'shortid';
 import { Pagination } from 'react-bootstrap';
 import { Fetch } from '../utils/Fetch';
 import { Storage } from '../utils/Storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPageQuantity, setPostQuantity } from '../actions/actions';
-
-
+import { LIMIT } from '../constants/constants';
 
 export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPage, getLastPage, activePage}){
     const dispatch = useDispatch()
@@ -20,17 +19,13 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
         if(userId !== null){
             async function getLimit(){
                 const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
-                console.log(posts.data.length)
                 dispatch(setPostQuantity(posts.data.length))
-                console.log(postQuantity)
-                dispatch(setPageQuantity(Math.ceil(postQuantity / 5)))
+                dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
             }
             getLimit()
         }
     },[postQuantity, pageQuantity]);
 
-    console.log('PAGE QUANTITY PAGINATE COMP', pageQuantity)
-    console.log('POST QUANTITY', postQuantity)
     for (let num = 1; num <= pageQuantity; num++) {
         items.push(
             <Pagination.Item 
