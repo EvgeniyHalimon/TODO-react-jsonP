@@ -72,40 +72,6 @@ export default function PostForm(){
         dispatch(setData(data.data))
     }
 
-    const getPage = async (e) => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=${e.target.id}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(Number(e.target.id)))
-        dispatch(setData(data.data))
-    }
-
-    const getFirstPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=1&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(1))
-        dispatch(setData(data.data))
-    }
-
-    const getPrevPage = async () => {
-        if(Number(page) > 1){
-            const data = await Fetch.get(`posts?userId=${userId}&_page=${page - 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            dispatch(setActivePage(Number(page) - 1))
-            dispatch(setData(data.data))
-        }
-    }
-
-    const getNextPage = async () => {
-        if(Number(page) < pageQuantity){
-            const data = await Fetch.get(`posts?userId=${userId}&_page=${page + 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            dispatch(setActivePage(Number(page) + 1))
-            dispatch(setData(data.data))
-        }
-    }
-
-    const getLastPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=${pageQuantity}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(Number(pageQuantity)))
-        dispatch(setData(data.data))
-    }
-
     async function getPosts(){
         const ID = Storage.getData('account')?.slice(1, -1)
         Fetch.get(`posts?userId=${ID}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
@@ -154,14 +120,7 @@ export default function PostForm(){
                 
                 <PostList array={POSTS} onClick={handleDelete} change={handleChange}/> 
         
-            <Paginate
-                getPage={getPage}
-                getFirstPage={getFirstPage}
-                getPrevPage={getPrevPage}
-                getNextPage={getNextPage}
-                getLastPage={getLastPage}
-                page={page}
-            />
+            <Paginate/>
         </Box>
     )
 }
