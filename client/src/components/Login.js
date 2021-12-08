@@ -20,7 +20,7 @@ const validationSchema = yup.object({
 })
 
 export default function Login(){
-    const [isLogin, setIsLogin] = useState('not')
+    const [isLogin, setIsLogin] = useState(true)
     const [email, setEmail] = useState(true)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -52,6 +52,13 @@ export default function Login(){
             })
         },
     })
+
+    useEffect(() => {
+        return () => {
+            setEmail(true)
+            setIsLogin(true)
+        }
+    });
 
     return(
         <Box

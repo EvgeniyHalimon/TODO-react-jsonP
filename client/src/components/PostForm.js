@@ -28,6 +28,10 @@ export default function PostForm(){
     const POSTS = useSelector(state => state.array)
     const page = useSelector(state => state.activePage)
 
+    console.log('************************************** page', page)
+    console.log('+++++++++++++++++++++++++++++++++++++ POSTS', POSTS)
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity', pageQuantity)
+
     const formik = useFormik({
         initialValues: {
             post: ''
@@ -51,7 +55,7 @@ export default function PostForm(){
         },
     })
 
-    const handleChange = async (e) => {
+    const handleChangePost = async (e) => {
         e.currentTarget.style.background = "green"
         await Fetch.patch(`posts/${e.target.id}`,{
             checked : true
@@ -74,10 +78,11 @@ export default function PostForm(){
 
     async function getPosts(){
         const ID = Storage.getData('account')?.slice(1, -1)
-        Fetch.get(`posts?userId=${ID}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        console.log('5656565665', page)
+        Fetch.get(`posts?userId=${ID}&_page=${page ?? 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         .then(res => {
             dispatch(setData(res.data))
-            dispatch(setActivePage(page))
+            dispatch(setActivePage(page ?? 1))
         })
     }
 
@@ -85,8 +90,6 @@ export default function PostForm(){
         Fetch.get(`users/${userId}`).then(res => dispatch(setName(res.data.username)))
         getPosts()
     }, []);
-
-    console.log('**************************************', page)
 
     return(
         <Box
@@ -116,10 +119,7 @@ export default function PostForm(){
                     Submit
                 </Button>
             </FormControl>
-        
-                
-                <PostList array={POSTS} onClick={handleDelete} change={handleChange}/> 
-        
+            <PostList array={POSTS} onClick={handleDelete} change={handleChangePost}/> 
             <Paginate/>
         </Box>
     )
