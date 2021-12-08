@@ -16,38 +16,34 @@ export default function Paginate(){
 
     let items = []
 
-    const getPage = async (e) => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=${e.target.id}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(Number(e.target.id)))
+    const getPageUniversal = async (newPage) => {
+        const data = await Fetch.get(`posts?userId=${userId}&_page=${newPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        dispatch(setActivePage(newPage))
         dispatch(setData(data.data))
     }
 
+    const getPage = async (e) => {
+        getPageUniversal(Number(e.target.id))
+    }
+
     const getFirstPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=1&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(1))
-        dispatch(setData(data.data))
+        getPageUniversal(1)
     }
 
     const getPrevPage = async () => {
         if(Number(page) > 1){
-            const data = await Fetch.get(`posts?userId=${userId}&_page=${page - 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            dispatch(setActivePage(Number(page) - 1))
-            dispatch(setData(data.data))
+            getPageUniversal(Number(page) - 1)
         }
     }
 
     const getNextPage = async () => {
         if(Number(page) < pageQuantity){
-            const data = await Fetch.get(`posts?userId=${userId}&_page=${page + 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            dispatch(setActivePage(Number(page) + 1))
-            dispatch(setData(data.data))
+            getPageUniversal(Number(page) + 1)
         }
     }
 
     const getLastPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=${pageQuantity}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(Number(pageQuantity)))
-        dispatch(setData(data.data))
+        getPageUniversal(pageQuantity)
     }
 
     useEffect(() => {

@@ -28,10 +28,6 @@ export default function PostForm(){
     const POSTS = useSelector(state => state.array)
     const page = useSelector(state => state.activePage)
 
-    console.log('************************************** page', page)
-    console.log('+++++++++++++++++++++++++++++++++++++ POSTS', POSTS)
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity', pageQuantity)
-
     const formik = useFormik({
         initialValues: {
             post: ''
@@ -62,33 +58,48 @@ export default function PostForm(){
         })
         getPosts()
     }
+    
+
+    // console.log('************************************** page', page)
+    //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity', pageQuantity)
+    
 
     const handleDelete = async (e) => {
         await Fetch.delete(`posts/${e.target.id}`)
+        
+        // if(pageQuantity !== page){
+        //     let test = pageQuantity - 1
+        //     console.log(test)
+        //     Fetch.get(`posts?userId=${userId}&_page=${test}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        //     .then(res => {
+        //         console.log(res)
+        //         dispatch(setData(res.data))
+        //         dispatch(setActivePage(test))
+        //     })
+        // } else {
+        //     dispatch(setActivePage(pageQuantity))
+        // }
         getPosts()
         dispatch(setPostQuantity(Number(postQuantity) - 1))
         dispatch(setPageQuantity(Math.ceil(Number(postQuantity) / LIMIT)))
     }
-
-    const getPageUniversal = async (newPage) => {
-        const data = await Fetch.get(`posts?userId=${userId}&_page=${newPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        dispatch(setActivePage(newPage))
-        dispatch(setData(data.data))
-    }
-
+    
     async function getPosts(){
         const ID = Storage.getData('account')?.slice(1, -1)
-        console.log('5656565665', page)
         Fetch.get(`posts?userId=${ID}&_page=${page ?? 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         .then(res => {
             dispatch(setData(res.data))
             dispatch(setActivePage(page ?? 1))
         })
     }
-
+    
     useEffect(() => {
         Fetch.get(`users/${userId}`).then(res => dispatch(setName(res.data.username)))
         getPosts()
+        // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity !== page', pageQuantity === page)
+        // if(pageQuantity === page){
+        //     console.log('jeronimo')
+        // }
     }, []);
 
     return(
