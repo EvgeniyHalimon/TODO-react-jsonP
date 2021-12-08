@@ -1,3 +1,10 @@
+const setActivePage = (page) => {
+    return{
+        type:'SET_ACTIVE_PAGE',
+        payload : page
+    }
+}
+
 const setPostQuantity = (num) => {
     return{
         type:'SET_POST_QUANTITY',
@@ -41,6 +48,7 @@ const setLogout = (bool) => {
 }
 
 export{
+    setActivePage,
     setPostQuantity,
     setPageQuantity,
     setUserId,

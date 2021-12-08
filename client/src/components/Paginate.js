@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPageQuantity, setPostQuantity } from '../actions/actions';
 import { LIMIT } from '../constants/constants';
 
-export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPage, getLastPage, activePage}){
+export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPage, getLastPage, page}){
     const dispatch = useDispatch()
     const postQuantity = useSelector(state => state.postQua)
     const pageQuantity = useSelector(state => state.pageQua)
@@ -15,23 +15,24 @@ export default function Paginate({getPage, getFirstPage, getPrevPage, getNextPag
     let items = []
 
     useEffect(() => {
-        const userId = Storage.getData('account')
-        if(userId !== null){
-            async function getLimit(){
-                const posts = await Fetch.get(`posts?userId=${userId.slice(1, -1)}`)
-                dispatch(setPostQuantity(posts.data.length))
-                dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
-            }
-            getLimit()
+        const userId = Storage.getData('account')?.slice(1, -1)
+        async function getLimit(){
+            const posts = await Fetch.get(`posts?userId=${userId}`)
+            dispatch(setPostQuantity(posts.data.length))
         }
-    },[postQuantity, pageQuantity]);
+        getLimit()
+    },[]);
+
+    useEffect(() => {
+        dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
+    }, [postQuantity]);
 
     for (let num = 1; num <= pageQuantity; num++) {
         items.push(
             <Pagination.Item 
                 onClick={getPage}
                 key={shortid.generate()}
-                active={num === activePage}
+                active={num === page}
                 id={num}
             >
                 {num}

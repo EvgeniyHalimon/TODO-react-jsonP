@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import { Button, TextField, FormControl, Box}  from '@mui/material';
@@ -8,7 +8,7 @@ import shortid from 'shortid';
 import { Storage } from '../utils/Storage';
 import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
-import { setData, setName, setPageQuantity, setPostQuantity } from '../actions/actions';
+import { setActivePage, setData, setName, setPageQuantity, setPostQuantity } from '../actions/actions';
 import { LIMIT } from '../constants/constants';
 
 const validationSchema = yup.object({
@@ -20,35 +20,31 @@ const validationSchema = yup.object({
 })
 
 export default function PostForm(){
-    const userId = Storage.getData('account')
-    const [addPost, setAddPost] = useState(false)
-    const [deletePost, setDeletePost] = useState(false)
-    const [checked, setChecked] = useState(false)
-    const [page, setPage] = useState(1)
-    const [activePage, setActivePage] = useState(1)
-
+    const userId = Storage.getData('account')?.slice(1, -1)
     const dispatch = useDispatch()
     const postQuantity = useSelector(state => state.postQua)
-    const pageQua = useSelector(state => state.pageQua)
+    const pageQuantity = useSelector(state => state.pageQua)
     const name = useSelector(state => state.name)
     const POSTS = useSelector(state => state.array)
-    
+    const page = useSelector(state => state.activePage)
 
     const formik = useFormik({
         initialValues: {
             post: ''
         },
         validationSchema: validationSchema,
-        onSubmit: (values, actions) => {
-            Fetch.post('posts', {
+        onSubmit: async (values, actions) => {
+            const data = await Fetch.post('posts', {
                 post : values.post,
                 checked : false,
                 id : shortid.generate(), 
                 date: new Date().toLocaleDateString('en-GB'),
                 time : new Date().toLocaleTimeString('it-IT'),
-                userId: userId.slice(1, -1)
+                userId: userId
             })
-            setAddPost(true)
+
+            getPosts()
+            // dispatch(setData([data.data, ...POSTS]))
             dispatch(setPostQuantity(Number(postQuantity) + 1))
             dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
             actions.resetForm()
@@ -60,82 +56,72 @@ export default function PostForm(){
         await Fetch.patch(`posts/${e.target.id}`,{
             checked : true
         })
-        setChecked(true)
+        getPosts()
     }
 
-    const handleDelete = (e) => {
-        Fetch.delete(`posts/${e.target.id}`)
-        setDeletePost(true)
+    const handleDelete = async (e) => {
+        await Fetch.delete(`posts/${e.target.id}`)
+        getPosts()
         dispatch(setPostQuantity(Number(postQuantity) - 1))
         dispatch(setPageQuantity(Math.ceil(Number(postQuantity) / LIMIT)))
     }
 
-    const getPage = async (e) => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${e.target.id}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+    const getPageUniversal = async (newPage) => {
+        const data = await Fetch.get(`posts?userId=${userId}&_page=${newPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        dispatch(setActivePage(newPage))
         dispatch(setData(data.data))
-        setActivePage(Number(e.target.id))
-        setPage(e.target.id)
+    }
+
+    const getPage = async (e) => {
+        const data = await Fetch.get(`posts?userId=${userId}&_page=${e.target.id}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        dispatch(setActivePage(Number(e.target.id)))
+        dispatch(setData(data.data))
     }
 
     const getFirstPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=1&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        setActivePage(Number(1))
-        setPage(1)
+        const data = await Fetch.get(`posts?userId=${userId}&_page=1&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        dispatch(setActivePage(1))
         dispatch(setData(data.data))
     }
 
     const getPrevPage = async () => {
         if(Number(page) > 1){
-            setPage(Number(page) - 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            setActivePage(Number(page) - 1)
+            const data = await Fetch.get(`posts?userId=${userId}&_page=${page - 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+            dispatch(setActivePage(Number(page) - 1))
             dispatch(setData(data.data))
         }
     }
 
     const getNextPage = async () => {
-        if(Number(page) < pageQua){
-            setPage(Number(page) + 1)
-            const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            setActivePage(Number(page) + 1)
+        if(Number(page) < pageQuantity){
+            const data = await Fetch.get(`posts?userId=${userId}&_page=${page + 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+            dispatch(setActivePage(Number(page) + 1))
             dispatch(setData(data.data))
         }
     }
 
     const getLastPage = async () => {
-        const data = await Fetch.get(`posts?userId=${userId.slice(1, -1)}&_page=${pageQua}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        setActivePage(Number(pageQua))
-        setPage(Number(pageQua))
+        const data = await Fetch.get(`posts?userId=${userId}&_page=${pageQuantity}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        dispatch(setActivePage(Number(pageQuantity)))
         dispatch(setData(data.data))
     }
 
+    async function getPosts(){
+        const ID = Storage.getData('account')?.slice(1, -1)
+        Fetch.get(`posts?userId=${ID}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+        .then(res => {
+            dispatch(setData(res.data))
+            dispatch(setActivePage(page))
+        })
+    }
+
     useEffect(() => {
-        const ID = Storage.getData('account')
-        if(ID !== null){
-            Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${page}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-            .then(res => {
-                dispatch(setData(res.data))
-                setAddPost(false)
-                setDeletePost(false)
-                setChecked(false)
-            })
-            Fetch.get(`users/${ID.slice(1, -1)}`)
-            .then(res => dispatch(setName(res.data.username)))
-            if(POSTS.length === 0){
-                Fetch.get(`posts?userId=${ID.slice(1, -1)}&_page=${Number(activePage) - 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-                .then(res => {
-                    dispatch(setData(res.data))
-                    setAddPost(false)
-                    setDeletePost(false)
-                    setChecked(false)
-                    setActivePage(Number(activePage) - 1)
-                })
-            } else {
-                setActivePage(Number(page))
-            }
-        }
-    }, [addPost, deletePost, checked, pageQua]);
-    
+        Fetch.get(`users/${userId}`).then(res => dispatch(setName(res.data.username)))
+        getPosts()
+    }, []);
+
+    console.log('**************************************', page)
+
     return(
         <Box
             className="form"
@@ -174,7 +160,7 @@ export default function PostForm(){
                 getPrevPage={getPrevPage}
                 getNextPage={getNextPage}
                 getLastPage={getLastPage}
-                activePage={activePage}
+                page={page}
             />
         </Box>
     )

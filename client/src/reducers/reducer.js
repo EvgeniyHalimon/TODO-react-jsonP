@@ -1,4 +1,5 @@
 const initialState ={
+    activePage: 1,
     postQua : 0,
     pageQua : 0,
     userID : null,
@@ -9,6 +10,11 @@ const initialState ={
 
 const reducer = (state = initialState, action) => {
     switch (action.type){
+    case 'SET_ACTIVE_PAGE' :
+        return{
+            ...state,
+            activePage : action.payload
+        }
     case 'SET_POST_QUANTITY':
         return {
             ...state,
