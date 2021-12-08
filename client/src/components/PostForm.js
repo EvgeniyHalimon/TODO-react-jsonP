@@ -16,17 +16,16 @@ const validationSchema = yup.object({
         .string('Enter your username')
         .min(1, 'Post is too short - should be 1 chars minimum.')
         .max(200, 'Must be 200 characters or less')
-        .required('Post is required'),
+        .required('Post is required')
 })
 
 export default function PostForm(){
     const userId = Storage.getData('account')?.slice(1, -1)
     const dispatch = useDispatch()
-    const postQuantity = useSelector(state => state.postQua)
-    const pageQuantity = useSelector(state => state.pageQua)
-    const name = useSelector(state => state.name)
-    const POSTS = useSelector(state => state.array)
-    const page = useSelector(state => state.activePage)
+    const postQuantity = useSelector(state => state.posts.postQua)
+    const page = useSelector(state => state.posts.activePage)
+    const name = useSelector(state => state.user.name)
+    const POSTS = useSelector(state => state.user.array)
 
     const formik = useFormik({
         initialValues: {
@@ -43,8 +42,12 @@ export default function PostForm(){
                 userId: userId
             })
 
-            getPosts()
-            // dispatch(setData([data.data, ...POSTS]))
+            if(page === 1){
+                dispatch(setData([data.data, ...POSTS.slice(0, 3)]))
+            } else {
+                getPosts()
+            }
+            
             dispatch(setPostQuantity(Number(postQuantity) + 1))
             dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
             actions.resetForm()
@@ -57,49 +60,38 @@ export default function PostForm(){
             checked : true
         })
         getPosts()
+        //slice, findIndex ?
     }
-    
-
-    // console.log('************************************** page', page)
-    //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity', pageQuantity)
-    
-
+ 
     const handleDelete = async (e) => {
         await Fetch.delete(`posts/${e.target.id}`)
-        
-        // if(pageQuantity !== page){
-        //     let test = pageQuantity - 1
-        //     console.log(test)
-        //     Fetch.get(`posts?userId=${userId}&_page=${test}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        //     .then(res => {
-        //         console.log(res)
-        //         dispatch(setData(res.data))
-        //         dispatch(setActivePage(test))
-        //     })
-        // } else {
-        //     dispatch(setActivePage(pageQuantity))
-        // }
-        getPosts()
+        getPosts(POSTS.length === 1)
         dispatch(setPostQuantity(Number(postQuantity) - 1))
         dispatch(setPageQuantity(Math.ceil(Number(postQuantity) / LIMIT)))
     }
     
-    async function getPosts(){
+    async function getPosts(shouldGoToPreviousPage){
         const ID = Storage.getData('account')?.slice(1, -1)
-        Fetch.get(`posts?userId=${ID}&_page=${page ?? 1}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
-        .then(res => {
-            dispatch(setData(res.data))
-            dispatch(setActivePage(page ?? 1))
-        })
+        if(shouldGoToPreviousPage){
+            const actualPage = page === 1 ? 1 : page - 1
+            Fetch.get(`posts?userId=${ID}&_page=${actualPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+            .then(res => {
+                dispatch(setData(res.data))
+                dispatch(setActivePage(actualPage))
+            })
+        } else{
+            const actualPage = page ?? 1
+            Fetch.get(`posts?userId=${ID}&_page=${actualPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
+            .then(res => {
+                dispatch(setData(res.data))
+                dispatch(setActivePage(actualPage))
+            })
+        }
     }
     
     useEffect(() => {
         Fetch.get(`users/${userId}`).then(res => dispatch(setName(res.data.username)))
         getPosts()
-        // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ pageQuantity !== page', pageQuantity === page)
-        // if(pageQuantity === page){
-        //     console.log('jeronimo')
-        // }
     }, []);
 
     return(

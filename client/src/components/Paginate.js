@@ -10,18 +10,17 @@ import { LIMIT } from '../constants/constants';
 export default function Paginate(){
     const userId = Storage.getData('account')?.slice(1, -1)
     const dispatch = useDispatch()
-    const page = useSelector(state => state.activePage)
-    const postQuantity = useSelector(state => state.postQua)
-    const pageQuantity = useSelector(state => state.pageQua)
+    const page = useSelector(state => state.posts.activePage)
+    const postQuantity = useSelector(state => state.posts.postQua)
+    const pageQuantity = useSelector(state => state.posts.pageQua)
 
-    let items = []
-
+    
     const getPageUniversal = async (newPage) => {
         const data = await Fetch.get(`posts?userId=${userId}&_page=${newPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         dispatch(setActivePage(newPage))
         dispatch(setData(data.data))
     }
-
+    
     const getPage = async (e) => {
         getPageUniversal(Number(e.target.id))
     }
@@ -35,17 +34,17 @@ export default function Paginate(){
             getPageUniversal(Number(page) - 1)
         }
     }
-
+    
     const getNextPage = async () => {
         if(Number(page) < pageQuantity){
             getPageUniversal(Number(page) + 1)
         }
     }
-
+    
     const getLastPage = async () => {
         getPageUniversal(pageQuantity)
     }
-
+    
     useEffect(() => {
         async function getLimit(){
             const posts = await Fetch.get(`posts?userId=${userId}`)
@@ -53,11 +52,12 @@ export default function Paginate(){
         }
         getLimit()
     },[]);
-
+    
     useEffect(() => {
         dispatch(setPageQuantity(Math.ceil(postQuantity / LIMIT)))
     }, [postQuantity]);
-
+    
+    let items = []
     for (let num = 1; num <= pageQuantity; num++) {
         items.push(
             <Pagination.Item 

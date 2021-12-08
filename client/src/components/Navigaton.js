@@ -9,7 +9,7 @@ import { setLogout, setUserId } from '../actions/actions';
 
 export default function Navigation(){
     const account = Storage.getData('account')
-    const user = useSelector(state => state.userID)
+    const user = useSelector(state => state.user.userID)
     const dispatch =  useDispatch()
     dispatch(setUserId(account))
 
