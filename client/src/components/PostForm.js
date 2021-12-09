@@ -56,13 +56,17 @@ export default function PostForm(){
 
     const handleChangePost = async (e) => {
         e.currentTarget.style.background = "green"
-        await Fetch.patch(`posts/${e.target.id}`,{
+        const data = await Fetch.patch(`posts/${e.target.id}`,{
             checked : true
         })
-        getPosts()
-        //slice, findIndex ?
+        const index = POSTS.findIndex(value => {
+            return value.id == data.data.id
+        })
+        POSTS.splice(index, 0, data.data)
+        POSTS.splice(index + 1, 1)
+        dispatch(setData([...POSTS]))
     }
- 
+
     const handleDelete = async (e) => {
         await Fetch.delete(`posts/${e.target.id}`)
         getPosts(POSTS.length === 1)
