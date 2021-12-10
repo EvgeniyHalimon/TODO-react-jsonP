@@ -1,4 +1,4 @@
-const initialState ={
+/* const initialState ={
     posts : {
         activePage: 1,
         postQua : 0,
@@ -43,7 +43,7 @@ const reducer = (state = initialState, action) => {
             ...state,
             user: {
                 ...state.user,
-                pageQua : action.payload
+                userID : action.payload
             }
         }
     case 'SET_NAME':
@@ -79,6 +79,16 @@ const reducer = (state = initialState, action) => {
     }
     default:
         return state
+    }
+} */
+
+import updatePosts from "./post-reducer"
+import updateUser from "./user-reducer"
+
+const reducer = (state, action) => {
+    return{
+        user: updateUser(state, action),
+        posts: updatePosts(state, action),
     }
 }
 
