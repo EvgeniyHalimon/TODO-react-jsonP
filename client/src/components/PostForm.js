@@ -10,6 +10,7 @@ import Paginate from './Paginate';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActivePage, setData, setName, setPageQuantity, setPostQuantity } from '../actions/actions';
 import { LIMIT } from '../constants/constants';
+import { getThunkPosts } from '../actions/asyncActions';
 
 const validationSchema = yup.object({
     post: yup
@@ -74,9 +75,9 @@ export default function PostForm(){
         dispatch(setPageQuantity(Math.ceil(Number(postQuantity) / LIMIT)))
     }
     
-    async function getPosts(shouldGoToPreviousPage){
+    function getPosts(shouldGoToPreviousPage){
         const ID = Storage.getData('account')?.slice(1, -1)
-        if(shouldGoToPreviousPage){
+        /* if(shouldGoToPreviousPage){
             const actualPage = page === 1 ? 1 : page - 1
             Fetch.get(`posts?userId=${ID}&_page=${actualPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
             .then(res => {
@@ -90,6 +91,13 @@ export default function PostForm(){
                 dispatch(setData(res.data))
                 dispatch(setActivePage(actualPage))
             })
+        } */
+        if(shouldGoToPreviousPage){
+            const actualPage = page === 1 ? 1 : page - 1
+            dispatch(getThunkPosts(ID, actualPage, LIMIT))
+        } else {
+            const actualPage = page ?? 1
+            dispatch(getThunkPosts(ID, actualPage, LIMIT))
         }
     }
     

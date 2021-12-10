@@ -47,6 +47,13 @@ const setLogout = (bool) => {
     }
 }
 
+const getData = (payload) => {
+    return {
+        type: 'THUNK',
+        payload
+    }
+}
+
 export{
     setActivePage,
     setPostQuantity,
@@ -54,5 +61,6 @@ export{
     setUserId,
     setName,
     setData,
-    setLogout
+    setLogout,
+    getData
 }
