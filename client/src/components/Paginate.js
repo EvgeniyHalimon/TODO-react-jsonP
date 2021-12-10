@@ -13,13 +13,7 @@ export default function Paginate(){
     const page = useSelector(state => state.posts.activePage)
     const postQuantity = useSelector(state => state.posts.postQua)
     const pageQuantity = useSelector(state => state.posts.pageQua)
-    console.groupCollapsed()
-    console.log(page)
-    console.log(postQuantity)
-    console.log(pageQuantity)
-    console.groupEnd();
 
-    
     const getPageUniversal = async (newPage) => {
         const data = await Fetch.get(`posts?userId=${userId}&_page=${newPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
         dispatch(setActivePage(newPage))

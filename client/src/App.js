@@ -6,11 +6,8 @@ import Dashboard from './components/Dashboard';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Navigation from './components/Navigaton';
 import Welcome from './components/Welcome';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import reducer from './reducers/reducer';
-
-const store = createStore(reducer)
+import store from './store/store';
 
 function App() {
   return (

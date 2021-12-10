@@ -27,12 +27,6 @@ export default function PostForm(){
     const name = useSelector(state => state.user.name)
     const POSTS = useSelector(state => state.user.array)
 
-    console.groupCollapsed()
-    console.log(postQuantity)
-    console.log(page)
-    console.log(POSTS)
-    console.groupEnd();
-
     const formik = useFormik({
         initialValues: {
             post: ''
@@ -93,7 +87,6 @@ export default function PostForm(){
             const actualPage = page ?? 1
             Fetch.get(`posts?userId=${ID}&_page=${actualPage}&_limit=${LIMIT}&_sort=date,time&_order=desc,desc`)
             .then(res => {
-                console.log(res.data)
                 dispatch(setData(res.data))
                 dispatch(setActivePage(actualPage))
             })

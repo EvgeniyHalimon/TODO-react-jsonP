@@ -1,30 +1,6 @@
 {
   "posts": [
     {
-      "post": "ttt",
-      "checked": false,
-      "id": "k93oJ9I_RiM",
-      "date": "09/12/2021",
-      "time": "11:59:20",
-      "userId": "_pVZq3UWP"
-    },
-    {
-      "post": "qwe",
-      "checked": true,
-      "id": "yvFYvc4jhl9",
-      "date": "09/12/2021",
-      "time": "11:59:26",
-      "userId": "_pVZq3UWP"
-    },
-    {
-      "post": "1",
-      "checked": true,
-      "id": "SfLVcOjALNp",
-      "date": "09/12/2021",
-      "time": "11:59:35",
-      "userId": "_pVZq3UWP"
-    },
-    {
       "post": "qw",
       "checked": false,
       "id": "OfLs58wKq",
@@ -39,22 +15,6 @@
       "date": "10/12/2021",
       "time": "11:56:32",
       "userId": "V0sFi6eYL"
-    },
-    {
-      "post": "12",
-      "checked": true,
-      "id": "t4QXUYXjDJH",
-      "date": "10/12/2021",
-      "time": "12:20:46",
-      "userId": "_pVZq3UWP"
-    },
-    {
-      "post": "123123",
-      "checked": false,
-      "id": "i1QSPWYThab",
-      "date": "10/12/2021",
-      "time": "12:30:38",
-      "userId": "_pVZq3UWP"
     }
   ],
   "users": [
